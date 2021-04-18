@@ -30,49 +30,52 @@ def find_scenes(video_path, threshold=30.0):
     return scene_manager.get_scene_list()
 
 
-INPUT_PATH = './videos/tourism.mp4'
+def save_frames(INPUT_PATH):
+    scenes = find_scenes(INPUT_PATH)
+    scene_ranges = []
+    blurr_score = []
 
-scenes = find_scenes(INPUT_PATH)
-scene_ranges = []
-blurr_score = []
+    # Find start and end frame of each scene
+    for (start, end) in scenes:
+        scene_ranges.append((start.get_frames(), end.get_frames()))
 
-# Find start and end frame of each scene
-for (start, end) in scenes:
-    scene_ranges.append((start.get_frames(), end.get_frames()))
-
-vidcap = cv2.VideoCapture(INPUT_PATH)
-success, image = vidcap.read()
-count = 0
-
-# Measure non-blurry score of each frame
-while success:
-    gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
-    fm = variance_of_laplacian(gray)
-
-    blurr_score.append(fm)
+    vidcap = cv2.VideoCapture(INPUT_PATH)
     success, image = vidcap.read()
-    count += 1
+    count = 0
 
-best_frames = []
+    # Measure non-blurry score of each frame
+    while success:
+        gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+        fm = variance_of_laplacian(gray)
 
-# Find frame with max score in each scene range
-for i, (start, end) in enumerate(scene_ranges):
-    scene = blurr_score[start:end]
-    best_score = max(scene)
-    best_frame = scene.index(best_score)
-    best_frames.append(start + best_frame)
+        blurr_score.append(fm)
+        success, image = vidcap.read()
+        count += 1
 
-vidcap = cv2.VideoCapture(INPUT_PATH)
-success, image = vidcap.read()
-count = 0
-ind = 0
+    best_frames = []
 
-# Save best scored frames for each scene
-while success and ind < len(best_frames):
-    if (count == best_frames[ind]):
-        cv2.imwrite('scenes/tourism_scene{}.jpg'.format(ind), image)
-        ind += 1
+    # Find frame with max score in each scene range
+    for i, (start, end) in enumerate(scene_ranges):
+        scene = blurr_score[start:end]
+        best_score = max(scene)
+        best_frame = scene.index(best_score)
+        best_frames.append(start + best_frame)
 
-    blurr_score.append(fm)
+    vidcap = cv2.VideoCapture(INPUT_PATH)
     success, image = vidcap.read()
-    count += 1
+    count = 0
+    ind = 0
+
+    # Save best scored frames for each scene
+    while success and ind < len(best_frames):
+        if (count == best_frames[ind]):
+            cv2.imwrite('scenes/tourism_scene{}.jpg'.format(ind), image)
+            ind += 1
+
+        blurr_score.append(fm)
+        success, image = vidcap.read()
+        count += 1
+
+
+if __name__ == '__main__':
+    save_frames('./videos/tourism.mp4')
