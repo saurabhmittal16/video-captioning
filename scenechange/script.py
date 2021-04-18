@@ -1,4 +1,5 @@
 import cv2
+import uuid
 from scenedetect import VideoManager
 from scenedetect import SceneManager
 
@@ -30,7 +31,7 @@ def find_scenes(video_path, threshold=30.0):
     return scene_manager.get_scene_list()
 
 
-def save_frames(INPUT_PATH):
+def save_frames(INPUT_PATH, OUTPUT_PATH):
     scenes = find_scenes(INPUT_PATH)
     scene_ranges = []
     blurr_score = []
@@ -66,15 +67,20 @@ def save_frames(INPUT_PATH):
     count = 0
     ind = 0
 
+    root = uuid.uuid4().hex[0:6]
+
     # Save best scored frames for each scene
     while success and ind < len(best_frames):
         if (count == best_frames[ind]):
-            cv2.imwrite('scenes/tourism_scene{}.jpg'.format(ind), image)
+            filename = '{}/{}{}.jpg'.format(OUTPUT_PATH, root, ind)
+            cv2.imwrite(filename, image)
             ind += 1
 
         blurr_score.append(fm)
         success, image = vidcap.read()
         count += 1
+
+    return root, ind
 
 
 if __name__ == '__main__':
