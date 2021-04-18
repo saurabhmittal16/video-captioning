@@ -1,5 +1,4 @@
 import cv2
-import uuid
 from scenedetect import VideoManager
 from scenedetect import SceneManager
 
@@ -17,8 +16,7 @@ def find_scenes(video_path, threshold=30.0):
     # Create our video & scene managers, then add the detector.
     video_manager = VideoManager([video_path])
     scene_manager = SceneManager()
-    scene_manager.add_detector(
-        ContentDetector(threshold=threshold))
+    scene_manager.add_detector(ContentDetector(threshold=threshold))
 
     # Improve processing speed by downscaling before processing.
     video_manager.set_downscale_factor()
@@ -31,7 +29,7 @@ def find_scenes(video_path, threshold=30.0):
     return scene_manager.get_scene_list()
 
 
-def save_frames(INPUT_PATH, OUTPUT_PATH):
+def save_frames(INPUT_PATH, OUTPUT_PATH, name):
     scenes = find_scenes(INPUT_PATH)
     scene_ranges = []
     blurr_score = []
@@ -67,12 +65,12 @@ def save_frames(INPUT_PATH, OUTPUT_PATH):
     count = 0
     ind = 0
 
-    root = uuid.uuid4().hex[0:6]
+    root = name
 
     # Save best scored frames for each scene
     while success and ind < len(best_frames):
-        if (count == best_frames[ind]):
-            filename = '{}/{}{}.jpg'.format(OUTPUT_PATH, root, ind)
+        if count == best_frames[ind]:
+            filename = "{}/{}{}.jpg".format(OUTPUT_PATH, root, ind)
             cv2.imwrite(filename, image)
             ind += 1
 
@@ -83,5 +81,5 @@ def save_frames(INPUT_PATH, OUTPUT_PATH):
     return root, ind
 
 
-if __name__ == '__main__':
-    save_frames('./videos/tourism.mp4')
+if __name__ == "__main__":
+    save_frames("./videos/tourism.mp4")
