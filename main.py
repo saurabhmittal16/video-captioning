@@ -22,6 +22,14 @@ def load_image(image_path, transform=None):
     return image
 
 
+# Save text to file with specified name
+def save_text(text, name):
+    f = open("./captions/{}.txt".format(name), "w+")
+    f.write(text)
+    f.close()
+
+
+# CONFIG VALUES
 PATH = "./videos/tourism.mp4"
 NAME = "tourism"
 OUTPUT = "./frames/"
@@ -71,6 +79,8 @@ for i in tqdm(range(count)):
     sentence = " ".join(sampled_caption[1:-2])
 
     caption += sentence.capitalize() + ". "
+
+save_text(caption, NAME)
 
 print("\nFinal caption-")
 print(caption)
