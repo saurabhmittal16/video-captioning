@@ -30,8 +30,8 @@ def save_text(text, name):
 
 
 # CONFIG VALUES
-PATH = "./videos/tourism.mp4"
-NAME = "tourism"
+NAME = "animal_short"
+PATH = "./videos/{}.mp4".format(NAME)
 OUTPUT = "./frames/"
 
 # Load vocabulary wrapper
