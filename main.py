@@ -9,7 +9,7 @@ from tqdm import tqdm
 from build_vocab import Vocabulary
 from torchvision import transforms
 from model import EncoderCNN, DecoderRNN
-from scenechange import script
+from scenechange import core
 
 # Image loader function
 def load_image(image_path, transform=None):
@@ -30,7 +30,7 @@ def save_text(text, name):
 
 
 # CONFIG VALUES
-NAME = "animal_short"
+NAME = "animal_short_demo"
 PATH = "./videos/{}.mp4".format(NAME)
 OUTPUT = "./frames/"
 
@@ -55,7 +55,7 @@ decoder.load_state_dict(torch.load("./models/decoder-5-3000.pkl"))
 
 # Find scenes and select frames
 print("Detecting scenes in video file: {}".format(PATH))
-root, count = script.save_frames(PATH, OUTPUT, NAME)
+root, count = core.find_and_save_frames(PATH, OUTPUT, NAME)
 
 caption = ""
 

@@ -29,7 +29,7 @@ def find_scenes(video_path, threshold=30.0):
     return scene_manager.get_scene_list()
 
 
-def save_frames(INPUT_PATH, OUTPUT_PATH, name):
+def find_and_save_frames(INPUT_PATH, OUTPUT_PATH, name):
     scenes = find_scenes(INPUT_PATH)
     scene_ranges = []
     blurr_score = []
